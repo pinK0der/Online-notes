@@ -1,4 +1,3 @@
-оціни Readme.md файл
 
 # 📝 Online notes with TTL
 
