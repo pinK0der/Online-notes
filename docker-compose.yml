@@ -1,0 +1,43 @@
+version: "3.8"
+
+services:
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: slavik228
+      POSTGRES_DB: notes_db
+    ports:
+      - "5432:5432"
+    networks:
+      - webnet
+
+  backend:
+    build:
+      context: ./back
+    environment:
+      DATABASE_URL: postgresql://postgres:slavik228@db:5432/notes_db
+    depends_on:
+      - db
+    container_name: fastapi_backend
+    ports:
+      - "8000:8000"
+    networks:
+      - webnet
+
+  frontend:
+    build:
+      context: ./front/notes-front
+      dockerfile: Dockerfile
+    container_name: nextjs_frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    environment:
+      - NEXT_PUBLIC_API_URL=http://backend:8000
+    networks:
+      - webnet
+
+networks:
+  webnet:
